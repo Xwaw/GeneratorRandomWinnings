@@ -54,13 +54,10 @@ public class Window extends JFrame implements ActionListener {
         GenerateButton = new JButton("Generate");
         GenerateButton.setBounds(25, 170, 200, 50);
         add(GenerateButton, BorderLayout.SOUTH);
-        GenerateButton.addActionListener(this::actionPerformed);
+
+        GenerateButton.addActionListener(this);
 
         this.add(GenerateButton);
-
-        this.add(inputCup);
-        this.add(inputCash);
-        this.add(inputCopies);
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
@@ -79,7 +76,7 @@ public class Window extends JFrame implements ActionListener {
                     writer.write("\n");
 
                     RandomConverterGenerator randomConv = new RandomConverterGenerator(Integer.parseInt(inputCup.getText()));
-                    CoreWinnings cw = new CoreWinnings(randomConv.getWinMultiplier(), Float.valueOf(inputCash.getText()));
+                    CoreWinnings cw = new CoreWinnings(randomConv.getWinMultiplier(), Float.parseFloat(inputCash.getText()));
 
                     writer.write(inputCup.getText() + " Match cups: " + "[ " + randomConv.getWinMultiplier() + " ]" + "\n");
 

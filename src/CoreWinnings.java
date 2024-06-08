@@ -1,7 +1,7 @@
 public class CoreWinnings {
-    float VAT = 0.88f; // -12% wat
-    float Winning; //Cash after win
-    float WATWinning; // Cash after win - 12% WAT
+    final float VAT = 0.88f; // -12% wat
+    final float Winning; //Cash after win
+    final float WATWinning; // Cash after win - 12% WAT
 
     CoreWinnings(float winMultiplayer, float cashSet){
         Winning = cashSet * winMultiplayer; // Win

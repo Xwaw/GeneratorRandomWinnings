@@ -3,9 +3,9 @@ import java.util.Random;
 public class RandomConverterGenerator {
     float winMultiplier;
 
-    RandomConverterGenerator(int Cups){
+    RandomConverterGenerator(int cups){
         Random rand = new Random();
-        switch(Cups){
+        switch(cups){
             case 2:
                 winMultiplier = rand.nextFloat(2.0f, 3.5f);
                 break;
