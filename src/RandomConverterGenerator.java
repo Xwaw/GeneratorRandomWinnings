@@ -21,21 +21,28 @@ public class RandomConverterGenerator {
         }
     }
 
-    public float getRandomCash(float cash, int space){
+    public int getRandomCash(float cash, int space){
         Random randomCash = new Random();
-        return Math.round(randomCash.nextFloat(cash - space, cash + space)*100)/100.0f;
+
+        if (cash < space){
+            space = Math.round(cash);
+        }
+        return randomCash.nextInt(Math.round(cash) - space, Math.round(cash) + space) ;
     }
 
     public float getWinMultiplier() {
         return Math.round(winMultiplier *100)/100.0f;
     }
 
-    public int[] getRandomTime(int minH, int maxH){
+    public String getRandomTime(int minH, int maxH){
         Random randomTime = new Random();
 
+        int[] time;
         if (minH >= maxH - 1) {
-            return new int [] {maxH, randomTime.nextInt(0,59)};
+            time = new int [] {maxH, randomTime.nextInt(0,59)};
         }
-        return new int [] {randomTime.nextInt(minH, maxH - 1), randomTime.nextInt(0,59)};
+        time = new int [] {randomTime.nextInt(minH, maxH - 1), randomTime.nextInt(0,59)};
+
+        return String.format("%02d:%02d", time[0], time[1]);
     }
 }
