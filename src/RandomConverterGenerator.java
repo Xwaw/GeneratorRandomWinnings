@@ -25,14 +25,21 @@ public class RandomConverterGenerator {
     }
 
     public static String getRandomName() throws IOException {
-        BufferedReader randomNames = new BufferedReader(new InputStreamReader(Main.class.getClassLoader().getResourceAsStream("randomNames.txt")));
+        InputStream buffer = Main.class.getClassLoader().getResourceAsStream("randomNames.txt");
+
+        if (buffer == null) {
+            return null;
+        }
+
+        BufferedReader namesToRead = new BufferedReader(new InputStreamReader(buffer));
+
         Random rand = new Random();
 
         String line;
         int counter = 0;
         int chooseRandomIndexOfName = rand.nextInt(0,101);
 
-        while((line = randomNames.readLine()) != null){
+        while((line = namesToRead.readLine()) != null){
             if(counter == chooseRandomIndexOfName){
                 return line;
             }
