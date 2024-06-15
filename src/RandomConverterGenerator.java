@@ -1,3 +1,9 @@
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class RandomConverterGenerator {
@@ -21,20 +27,33 @@ public class RandomConverterGenerator {
         }
     }
 
-    public int getRandomCash(float cash, int space){
+    public static String getRandomName() throws IOException {
+        BufferedReader randomNames = new BufferedReader(new FileReader("C:\\Users\\admin\\IdeaProjects\\GeneratorRandomWinnings\\randomNames.txt"));
+        Random rand = new Random();
+
+        List<String> listOfNames = new ArrayList<String>();
+
+        while(randomNames.readLine() != null){
+            listOfNames.add(randomNames.readLine());
+        }
+
+        return listOfNames.get(rand.nextInt(0, listOfNames.size()));
+    }
+
+    public float getRandomCash(float cash, int space){
         Random randomCash = new Random();
 
         if (cash < space){
-            space = Math.round(cash);
+            space = randomCash.nextInt(0, Math.round(cash) - 1);
         }
-        return randomCash.nextInt(Math.round(cash) - space, Math.round(cash) + space) ;
+        return randomCash.nextFloat(cash - space, cash + space);
     }
 
     public float getWinMultiplier() {
         return Math.round(winMultiplier *100)/100.0f;
     }
 
-    public String getRandomTime(int minH, int maxH){
+    public static String getRandomTime(int minH, int maxH){
         Random randomTime = new Random();
 
         int[] time;

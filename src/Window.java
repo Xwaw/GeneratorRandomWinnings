@@ -1,9 +1,7 @@
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.time.LocalDate;
 
 public class Window extends JFrame implements ActionListener {
@@ -19,7 +17,7 @@ public class Window extends JFrame implements ActionListener {
     JButton OptionsButton;
 
     String txtName = "test";
-    String txtPathName = System.getProperty("user.home") + "\\Desktop\\" + txtName + ".txt";
+    String txtPathName = System.getProperty("user.home") + "/Desktop/" + txtName + ".txt";
 
     JCheckBox checkBoxRandomCash;
 
@@ -81,42 +79,42 @@ public class Window extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == GenerateButton){
             try {
-                BufferedWriter writer = new BufferedWriter(new FileWriter(txtPathName));
+                BufferedWriter ticketGenerated = new BufferedWriter(new FileWriter(txtPathName));
 
-                writer.write("=====================================================================\n");
+                ticketGenerated.write("=====================================================================\n");
 
-                for(int i=0; i<Integer.parseInt(inputCopies.getText()); i++){
-                    writer.write("\n");
+                float cash = (Math.round(Float.parseFloat(inputCash.getText()))*100)/100;
+                int cup = Integer.parseInt(inputCup.getText());
+                int copies = Integer.parseInt(inputCopies.getText());
 
-                    RandomConverterGenerator randomConv = new RandomConverterGenerator(Integer.parseInt(inputCup.getText()));
-                    CoreWinnings cw = new CoreWinnings(randomConv.getWinMultiplier(), Float.parseFloat(inputCash.getText()));
+                for(int i=0; i<copies; i++){
+                    RandomConverterGenerator randomConv = new RandomConverterGenerator(cup);
 
-                    writer.write(inputCup.getText() + " Match cups: " + "[ " + randomConv.getWinMultiplier() + " ]" + "\n");
+                    ticketGenerated.write("Congratulation " + randomConv.getRandomName() + " !" + "\n");
 
                     if(checkBoxRandomCash.isSelected()){
-                        writer.write("Cash: " + randomConv.getRandomCash(Integer.parseInt(inputCash.getText()), 50) + "\n"); //In setting value space will be able to change
-                    }else{
-                        writer.write("Cash: " + inputCash.getText() + "\n");
+                        cash = Math.round(randomConv.getRandomCash(cash, 50)); //In setting value space will be able to change
                     }
 
-                    writer.write("Cash win - VAT: " + cw.getWinningVAT() + "\n");
-                    writer.write("Cash win: " + cw.getWinning() + "\n");
+                    CoreWinnings cw = new CoreWinnings(randomConv.getWinMultiplier(), cash);
 
-                    writer.write("Time: " + LocalDate.now() + "  " + randomConv.getRandomTime(1, 24) + "\n");
+                    ticketGenerated.write(cup + " Match cups: " + "[ " + randomConv.getWinMultiplier() + " ]" + "\n");
 
-                    writer.write("\n");
-                    writer.write("=====================================================================\n");
+                    ticketGenerated.write("Cash: " + cash + "\n");
+
+                    ticketGenerated.write("Cash win - VAT: " + cw.getWinningVAT() + "\n");
+                    ticketGenerated.write("Cash win: " + cw.getWinning() + "\n");
+
+                    ticketGenerated.write("Time: " + LocalDate.now() + "  " + RandomConverterGenerator.getRandomTime(1, 24) + "\n");
+
+                    ticketGenerated.write("=====================================================================\n");
                 }
 
-                writer.close();
+                ticketGenerated.close();
+
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
         }
     }
 }
-
-//randomNeed Xwin = new randomNeed(Integer.parseInt(inputCup.getText()));
-//   CoreWinnings cw = new CoreWinnings(Xwin.getWinMultiplayer(), Float.valueOf(inputCash.getText()));
-//
-//            System.out.println(cw.getWinning() + " | " + cw.getWATWinning());
