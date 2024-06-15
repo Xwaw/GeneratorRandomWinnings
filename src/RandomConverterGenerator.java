@@ -1,7 +1,4 @@
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -28,7 +25,7 @@ public class RandomConverterGenerator {
     }
 
     public static String getRandomName() throws IOException {
-        BufferedReader randomNames = new BufferedReader(new FileReader("C:\\Users\\admin\\IdeaProjects\\GeneratorRandomWinnings\\randomNames.txt"));
+        BufferedReader randomNames = new BufferedReader(new InputStreamReader(Main.class.getClassLoader().getResourceAsStream("randomNames.txt")));
         Random rand = new Random();
 
         String line;
@@ -43,7 +40,7 @@ public class RandomConverterGenerator {
             counter++;
         }
 
-        return "a";
+        return null;
     }
 
     public float getRandomCash(float cash, int space){
