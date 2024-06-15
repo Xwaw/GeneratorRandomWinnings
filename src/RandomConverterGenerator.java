@@ -31,13 +31,19 @@ public class RandomConverterGenerator {
         BufferedReader randomNames = new BufferedReader(new FileReader("C:\\Users\\admin\\IdeaProjects\\GeneratorRandomWinnings\\randomNames.txt"));
         Random rand = new Random();
 
-        List<String> listOfNames = new ArrayList<String>();
+        String line;
+        int counter = 0;
+        int chooseRandomIndexOfName = rand.nextInt(0,101);
 
-        while(randomNames.readLine() != null){
-            listOfNames.add(randomNames.readLine());
+        while((line = randomNames.readLine()) != null){
+            if(counter == chooseRandomIndexOfName){
+                return line;
+            }
+
+            counter++;
         }
 
-        return listOfNames.get(rand.nextInt(0, listOfNames.size()));
+        return "a";
     }
 
     public float getRandomCash(float cash, int space){
