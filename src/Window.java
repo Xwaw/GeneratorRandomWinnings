@@ -1,4 +1,6 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
@@ -25,6 +27,15 @@ public class Window extends JFrame implements ActionListener {
         this.setSize(265, 250);
         this.setTitle("Generator random winnings");
         this.setLayout(null);
+
+        try {
+            Image icon = ImageIO.read(Main.class.getClassLoader().getResource("RTGicon.png"));
+            setIconImage(icon);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        setLocationRelativeTo(null);
         //                  X   X    Y   Y   Y   Y    Y
         int[] parameters = {40, 85, 20, 50, 80, 120, 175};
 
@@ -115,6 +126,9 @@ public class Window extends JFrame implements ActionListener {
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
+        }
+        if(e.getSource() == OptionsButton){
+            OptionsWindow optionsWindow = new OptionsWindow();
         }
     }
 }
