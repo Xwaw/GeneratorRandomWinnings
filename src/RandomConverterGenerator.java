@@ -1,6 +1,4 @@
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public class RandomConverterGenerator {
@@ -54,7 +52,7 @@ public class RandomConverterGenerator {
         Random randomCash = new Random();
 
         if (cash < space){
-            space = randomCash.nextInt(0, Math.round(cash) - 1);
+            space = randomCash.nextInt(0, Math.round(cash));
         }
         return randomCash.nextFloat(cash - space, cash + space);
     }
