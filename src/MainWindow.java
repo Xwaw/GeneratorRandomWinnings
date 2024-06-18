@@ -6,11 +6,7 @@ import java.awt.event.ActionListener;
 import java.io.*;
 import java.time.LocalDate;
 
-public class Window extends JFrame implements ActionListener {
-    JLabel textCup;
-    JLabel textCash;
-    JLabel textCopies;
-
+public class MainWindow extends JFrame implements ActionListener {
     JTextField inputCup;
     JTextField inputCash;
     JTextField inputCopies;
@@ -23,7 +19,7 @@ public class Window extends JFrame implements ActionListener {
 
     JCheckBox checkBoxRandomCash;
 
-    Window(){
+    MainWindow(){
         this.setSize(265, 250);
         this.setTitle("Generator random winnings");
         this.setLayout(null);
@@ -36,19 +32,23 @@ public class Window extends JFrame implements ActionListener {
         }
 
         setLocationRelativeTo(null);
-        //                  X   X    Y   Y   Y   Y    Y
-        int[] parameters = {40, 85, 20, 50, 80, 120, 175};
+        // cordinates        X,  X,  Y,  Y,  Y,  Y,   Y
+        final int[] parameters = {40, 85, 20, 50, 80, 120, 175};
 
-        textCup = new JLabel("Cups: ");
+
+        // Jabels, Texts for mainWindow //
+        JLabel textCup = new JLabel("Cups: ");
         textCup.setBounds(parameters[0], parameters[2], 50, 20);
         add(textCup);
-        textCash = new JLabel("Cash: ");
+        JLabel textCash = new JLabel("Cash: ");
         textCash.setBounds(parameters[0], parameters[3], 50, 20);
         add(textCash);
-        textCopies = new JLabel("Copies: ");
+        JLabel textCopies = new JLabel("Copies: ");
         textCopies.setBounds(parameters[0], parameters[4], 50, 20);
         add(textCopies);
+        /////////////////////////////////
 
+        // inputBoxes, input for mainWindow //
         inputCup = new JTextField("2");
         inputCup.setBounds(parameters[1], parameters[2], 125, 25);
         add(inputCup);
@@ -60,14 +60,18 @@ public class Window extends JFrame implements ActionListener {
         inputCopies = new JTextField();
         inputCopies.setBounds(parameters[1], parameters[4], 125, 25);
         add(inputCopies);
+        /////////////////////////////////////
 
-
+        // CheckBox, it will be dead in this window //
         checkBoxRandomCash = new JCheckBox("Random Cash");
         checkBoxRandomCash.setBounds(130, parameters[6] + 2, 120, 20);
         checkBoxRandomCash.setSelected(true);
         add(checkBoxRandomCash);
 
+        checkBoxRandomCash.addActionListener(this);
+        ///////////////////////////////////////////////
 
+        // Buttons, input for mainWindow //
         GenerateButton = new JButton("Generate");
         GenerateButton.setBounds(25, parameters[5], 200, 50);
         add(GenerateButton);
@@ -78,12 +82,13 @@ public class Window extends JFrame implements ActionListener {
 
         GenerateButton.addActionListener(this);
         OptionsButton.addActionListener(this);
+        //////////////////////////////////
 
-        checkBoxRandomCash.addActionListener(this);
-
+        // Some setting for working window //
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
         this.setResizable(false);
+        ////////////////////////////////////
     }
 
     @Override
@@ -110,18 +115,17 @@ public class Window extends JFrame implements ActionListener {
                     CoreWinnings cw = new CoreWinnings(randomConv.getWinMultiplier(), cash);
 
                     ticketGenerated.write(cup + " Match cups: " + "[ " + randomConv.getWinMultiplier() + " ]" + "\n");
-
                     ticketGenerated.write("Cash: " + cash + "\n");
-
                     ticketGenerated.write("Cash win - VAT: " + cw.getWinningVAT() + "\n");
                     ticketGenerated.write("Cash win: " + cw.getWinning() + "\n");
-
                     ticketGenerated.write("Time: " + LocalDate.now() + "  " + RandomConverterGenerator.getRandomTime(1, 24) + "\n");
 
                     ticketGenerated.write("=====================================================================\n");
                 }
 
                 ticketGenerated.close();
+
+                Desktop.getDesktop().open(new File(txtPathName));
 
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
