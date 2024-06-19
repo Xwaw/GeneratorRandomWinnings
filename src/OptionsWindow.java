@@ -1,3 +1,5 @@
+import com.google.gson.Gson;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -65,11 +67,14 @@ public class OptionsWindow extends JFrame implements ActionListener {
         maxTextTime.setBounds(parameters[34], parameters[35], 50, 30);
         add(maxTextTime);
 
-
+        //////////////////////////////////
         checkBoxRandomCash = new JCheckBox("Set random Cash");
         checkBoxRandomCash.setBounds(parameters[0], parameters[1], 130, 20);
-        checkBoxRandomCash.setSelected(true);
         add(checkBoxRandomCash);
+        spaceInput = new JTextField();
+        spaceInput.setBounds(parameters[38], parameters[39], 50, 30);
+        add(spaceInput);
+        /////////////////////////////////
 
         checkBoxOpeningAfterGenerate = new JCheckBox("Open After Generate");
         checkBoxOpeningAfterGenerate.setBounds(parameters[2], parameters[3], 150, 20);
@@ -87,10 +92,6 @@ public class OptionsWindow extends JFrame implements ActionListener {
         add(comboBoxValuesCups);
         comboBoxValuesCups.addActionListener(this);
 
-
-        spaceInput = new JTextField("50");
-        spaceInput.setBounds(parameters[38], parameters[39], 50, 30);
-        add(spaceInput);
 
         minValueForCups = new JTextField();
         minValueForCups.setBounds(parameters[12], parameters[13], 50, 30);
@@ -134,6 +135,9 @@ public class OptionsWindow extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == comboBoxValuesCups){
             valueCupsText.setText(comboBoxValuesCups.getSelectedItem().toString() + " cups:");
+        }
+        if(e.getSource() == saveOptionsButton){
+
         }
     }
 }

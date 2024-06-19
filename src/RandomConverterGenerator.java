@@ -50,6 +50,8 @@ public class RandomConverterGenerator {
         return null;
     }
 
+    public float getWinMultiplier() {return Math.round(winMultiplier *100)/100.0f;}
+
     public float getRandomCash(float cash, int space){
         Random randomCash = new Random();
 
@@ -57,10 +59,6 @@ public class RandomConverterGenerator {
             space = randomCash.nextInt(0, Math.round(cash));
         }
         return randomCash.nextFloat(cash - space, cash + space);
-    }
-
-    public float getWinMultiplier() {
-        return Math.round(winMultiplier *100)/100.0f;
     }
 
     public static String getRandomTime(int minH, int maxH){

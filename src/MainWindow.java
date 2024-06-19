@@ -1,3 +1,6 @@
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -17,8 +20,6 @@ public class MainWindow extends JFrame implements ActionListener {
     String txtName = "test";
     String txtPathName = System.getProperty("user.home") + "/Desktop/" + txtName + ".txt";
 
-    JCheckBox checkBoxRandomCash;
-
     MainWindow(){
         this.setSize(265, 250);
         this.setTitle("Generator random winnings");
@@ -32,7 +33,7 @@ public class MainWindow extends JFrame implements ActionListener {
         }
 
         setLocationRelativeTo(null);
-        // cordinates        X,  X,  Y,  Y,  Y,  Y,   Y
+        // cordinates             X,  X,  Y,  Y,  Y,  Y,   Y
         final int[] parameters = {40, 85, 20, 50, 80, 120, 175};
 
 
@@ -62,15 +63,6 @@ public class MainWindow extends JFrame implements ActionListener {
         add(inputCopies);
         /////////////////////////////////////
 
-        // CheckBox, it will be dead in this window //
-        checkBoxRandomCash = new JCheckBox("Random Cash");
-        checkBoxRandomCash.setBounds(130, parameters[6] + 2, 120, 20);
-        checkBoxRandomCash.setSelected(true);
-        add(checkBoxRandomCash);
-
-        checkBoxRandomCash.addActionListener(this);
-        ///////////////////////////////////////////////
-
         // Buttons, input for mainWindow //
         GenerateButton = new JButton("Generate");
         GenerateButton.setBounds(25, parameters[5], 200, 50);
@@ -95,6 +87,15 @@ public class MainWindow extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == GenerateButton){
             try {
+                Gson gson = new Gson();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(Main.class.getClassLoader().getResourceAsStream("optionsSave.JSON")));
+                try(Reader reader2 = new InputStreamReader(Main.class.getClassLoader().getResourceAsStream("optionsSave.JSON"))) {
+                    gson.fromJson(new JsonReader(reader), OptionsManager.class);
+
+                    System.out.println(new OptionsManager().getGenerateCupStyle());
+                }catch(IOException e1){
+                    e1.printStackTrace();
+                }
                 BufferedWriter ticketGenerated = new BufferedWriter(new FileWriter(txtPathName));
 
                 ticketGenerated.write("=====================================================================\n");
@@ -108,9 +109,8 @@ public class MainWindow extends JFrame implements ActionListener {
 
                     ticketGenerated.write("Congratulation " + randomConv.getRandomName() + " !" + "\n");
 
-                    if(checkBoxRandomCash.isSelected()){
-                        cash = Math.round(randomConv.getRandomCash(cash, 50)); //In setting value space will be able to change
-                    }
+                    //cash = Math.round(randomConv.getRandomCash(cash, 50)); //In setting value space will be able to change
+
 
                     CoreWinnings cw = new CoreWinnings(randomConv.getWinMultiplier(), cash);
 

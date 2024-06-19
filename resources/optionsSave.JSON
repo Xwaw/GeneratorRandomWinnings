@@ -1,0 +1,34 @@
+{
+  "randomCash": false,
+  "openGeneratedTxt": false,
+  "spaceOfRandomCash": 50,
+  "cupsToSetAt": 2,
+  "generateCupStyle": "Constant",
+  "filePath": "System.getProperty(user.home) + /Desktop/",
+  "rangeRandomTime": [
+    1,
+    24
+  ],
+  "rangeRandomWinMultiplayer": [
+    [
+      1,
+      2
+    ],
+    [
+      2,
+      3.5
+    ],
+    [
+      4,
+      7
+    ],
+    [
+      8,
+      10.5
+    ],
+    [
+      11,
+      15
+    ]
+  ]
+}
