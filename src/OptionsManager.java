@@ -1,7 +1,7 @@
 public class OptionsManager {
     boolean randomCash;
     int spaceOfRandomCash;
-    boolean openGeneratedCash;
+    boolean openGeneratedTxt;
     int cupsToSetAt;
     String generateCupStyle;
     String filePath;
@@ -12,7 +12,7 @@ public class OptionsManager {
 
     public int getSpaceOfRandomCash() {return spaceOfRandomCash;}
 
-    public boolean isOpenGeneratedCash() {return openGeneratedCash;}
+    public boolean isOpenGeneratedCash() {return openGeneratedTxt;}
 
     public int getCupsToSetAt() {return cupsToSetAt;}
 

@@ -88,11 +88,10 @@ public class MainWindow extends JFrame implements ActionListener {
         if(e.getSource() == GenerateButton){
             try {
                 Gson gson = new Gson();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(Main.class.getClassLoader().getResourceAsStream("optionsSave.JSON")));
-                try(Reader reader2 = new InputStreamReader(Main.class.getClassLoader().getResourceAsStream("optionsSave.JSON"))) {
-                    gson.fromJson(new JsonReader(reader), OptionsManager.class);
+                try(Reader reader = new InputStreamReader(Main.class.getClassLoader().getResourceAsStream("optionsSave.JSON"))) {
+                    OptionsManager optionsSave = gson.fromJson(new JsonReader(reader), OptionsManager.class);
 
-                    System.out.println(new OptionsManager().getGenerateCupStyle());
+                    System.out.println(optionsSave.getGenerateCupStyle());
                 }catch(IOException e1){
                     e1.printStackTrace();
                 }
