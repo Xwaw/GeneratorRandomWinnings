@@ -88,13 +88,11 @@ public class MainWindow extends JFrame implements ActionListener {
         if(e.getSource() == GenerateButton){
             try {
                 Gson gson = new Gson();
-                try(Reader reader = new InputStreamReader(Main.class.getClassLoader().getResourceAsStream("optionsSave.JSON"))) {
-                    OptionsManager optionsSave = gson.fromJson(new JsonReader(reader), OptionsManager.class);
+                Reader reader = new InputStreamReader(Main.class.getClassLoader().getResourceAsStream("optionsSave.json"));
+                OptionsManager optionsSave = gson.fromJson(new JsonReader(reader), OptionsManager.class);
 
-                    System.out.println(optionsSave.getGenerateCupStyle());
-                }catch(IOException e1){
-                    e1.printStackTrace();
-                }
+                System.out.println(optionsSave.isRandomCash());
+
                 BufferedWriter ticketGenerated = new BufferedWriter(new FileWriter(txtPathName));
 
                 ticketGenerated.write("=====================================================================\n");
@@ -108,8 +106,9 @@ public class MainWindow extends JFrame implements ActionListener {
 
                     ticketGenerated.write("Congratulation " + randomConv.getRandomName() + " !" + "\n");
 
-                    //cash = Math.round(randomConv.getRandomCash(cash, 50)); //In setting value space will be able to change
-
+                    if(optionsSave.isRandomCash()) {
+                        cash = Math.round(randomConv.getRandomCash(cash, optionsSave.getSpaceOfRandomCash())); //In setting value space will be able to change
+                    }
 
                     CoreWinnings cw = new CoreWinnings(randomConv.getWinMultiplier(), cash);
 

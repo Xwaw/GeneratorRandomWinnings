@@ -1,12 +1,12 @@
 import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
+import java.io.*;
 
 public class OptionsWindow extends JFrame implements ActionListener {
     JCheckBox checkBoxRandomCash;
@@ -30,6 +30,10 @@ public class OptionsWindow extends JFrame implements ActionListener {
         this.setSize(420, 300);
         this.setTitle("Options");
         this.setLayout(null);
+
+        Gson gson = new Gson();
+        InputStreamReader reader =  new InputStreamReader(Main.class.getClassLoader().getResourceAsStream("optionsSave.json"));
+        OptionsManager fromOptionsSave = gson.fromJson(reader, OptionsManager.class);
 
         try {
             Image icon = ImageIO.read(Main.class.getClassLoader().getResource("settingsIcon.png"));
@@ -70,8 +74,9 @@ public class OptionsWindow extends JFrame implements ActionListener {
         //////////////////////////////////
         checkBoxRandomCash = new JCheckBox("Set random Cash");
         checkBoxRandomCash.setBounds(parameters[0], parameters[1], 130, 20);
+        checkBoxRandomCash.setSelected(fromOptionsSave.isRandomCash());
         add(checkBoxRandomCash);
-        spaceInput = new JTextField();
+        spaceInput = new JTextField(String.valueOf(fromOptionsSave.getSpaceOfRandomCash()));
         spaceInput.setBounds(parameters[38], parameters[39], 50, 30);
         add(spaceInput);
         /////////////////////////////////
@@ -137,7 +142,30 @@ public class OptionsWindow extends JFrame implements ActionListener {
             valueCupsText.setText(comboBoxValuesCups.getSelectedItem().toString() + " cups:");
         }
         if(e.getSource() == saveOptionsButton){
+            OptionsManager optionsSave = new OptionsManager();
 
+            optionsSave.setRandomCash(checkBoxRandomCash.isSelected());
+            optionsSave.isOpenGeneratedCash(checkBoxOpeningAfterGenerate.isSelected());
+
+            optionsSave.setSpaceOfRandomCash(Integer.parseInt(spaceInput.getText()));
+            optionsSave.setCupsToSetAt(comboBoxValuesCups.getSelectedIndex());
+
+            optionsSave.setGenerateCupStyle(comboBoxRandomCups.getSelectedItem().toString());
+            optionsSave.setFilePath(inputFilePath.getText());
+
+            optionsSave.setRangeRandomTime(new int[] {Integer.parseInt(minTime.getText()), Integer.parseInt(maxTime.getText())});
+            //optionsSave.setRangeRandomWinMultiplayer(new float[][] {Float.parseFloat()});
+
+
+
+            Gson gson = new Gson();
+            String json = gson.toJson(optionsSave);
+
+            try(FileWriter writer = new FileWriter(new File(Main.class.getClassLoader().getResource("optionsSave.json").getPath()))){
+                writer.write(json);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 }
