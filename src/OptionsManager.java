@@ -1,4 +1,5 @@
 public class OptionsManager {
+
     boolean randomCash;
     int spaceOfRandomCash;
     boolean openGeneratedTxt;
@@ -12,7 +13,7 @@ public class OptionsManager {
 
     public int getSpaceOfRandomCash() {return spaceOfRandomCash;}
 
-    public boolean isOpenGeneratedCash(boolean selected) {return openGeneratedTxt;}
+    public boolean isOpenGeneratedTxt() {return openGeneratedTxt;}
 
     public int getCupsToSetAt() {return cupsToSetAt;}
 

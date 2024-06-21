@@ -1,5 +1,4 @@
 import com.google.gson.Gson;
-import com.google.gson.stream.JsonReader;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -7,6 +6,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class OptionsWindow extends JFrame implements ActionListener {
     JCheckBox checkBoxRandomCash;
@@ -31,9 +32,15 @@ public class OptionsWindow extends JFrame implements ActionListener {
         this.setTitle("Options");
         this.setLayout(null);
 
+        OptionsManager fromOptionsSave = null;
+
         Gson gson = new Gson();
-        InputStreamReader reader =  new InputStreamReader(Main.class.getClassLoader().getResourceAsStream("optionsSave.json"));
-        OptionsManager fromOptionsSave = gson.fromJson(reader, OptionsManager.class);
+        Path filePath = Paths.get("optionsSave.json");
+        try(FileReader reader = new FileReader(filePath.toFile())){
+            fromOptionsSave = gson.fromJson(reader, OptionsManager.class);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
         try {
             Image icon = ImageIO.read(Main.class.getClassLoader().getResource("settingsIcon.png"));
@@ -83,12 +90,13 @@ public class OptionsWindow extends JFrame implements ActionListener {
 
         checkBoxOpeningAfterGenerate = new JCheckBox("Open After Generate");
         checkBoxOpeningAfterGenerate.setBounds(parameters[2], parameters[3], 150, 20);
-        checkBoxOpeningAfterGenerate.setSelected(true);
+        checkBoxOpeningAfterGenerate.setSelected(fromOptionsSave.isOpenGeneratedTxt());
         add(checkBoxOpeningAfterGenerate);
 
         String[] listOfGeneratingWithCups = { "Constant", "Random", "In sequence"};
         comboBoxRandomCups = new JComboBox(listOfGeneratingWithCups);
         comboBoxRandomCups.setBounds(parameters[6], parameters[7], 100, 30);
+        comboBoxRandomCups.setSelectedItem(fromOptionsSave.getGenerateCupStyle());
         add(comboBoxRandomCups);
 
         String[] valuesOfCups = {"2", "3", "4", "5"};
@@ -145,7 +153,7 @@ public class OptionsWindow extends JFrame implements ActionListener {
             OptionsManager optionsSave = new OptionsManager();
 
             optionsSave.setRandomCash(checkBoxRandomCash.isSelected());
-            optionsSave.isOpenGeneratedCash(checkBoxOpeningAfterGenerate.isSelected());
+            optionsSave.setOpenGeneratedTxt(checkBoxOpeningAfterGenerate.isSelected());
 
             optionsSave.setSpaceOfRandomCash(Integer.parseInt(spaceInput.getText()));
             optionsSave.setCupsToSetAt(comboBoxValuesCups.getSelectedIndex());
@@ -160,8 +168,9 @@ public class OptionsWindow extends JFrame implements ActionListener {
 
             Gson gson = new Gson();
             String json = gson.toJson(optionsSave);
+            Path filePath = Paths.get("optionsSave.json");
 
-            try(FileWriter writer = new FileWriter(new File(Main.class.getClassLoader().getResource("optionsSave.json").getPath()))){
+            try(FileWriter writer = new FileWriter(filePath.toFile())){
                 writer.write(json);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);

@@ -7,7 +7,10 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.Random;
 
 public class MainWindow extends JFrame implements ActionListener {
     JTextField inputCup;
@@ -88,8 +91,8 @@ public class MainWindow extends JFrame implements ActionListener {
         if(e.getSource() == GenerateButton){
             try {
                 Gson gson = new Gson();
-                Reader reader = new InputStreamReader(Main.class.getClassLoader().getResourceAsStream("optionsSave.json"));
-                OptionsManager optionsSave = gson.fromJson(new JsonReader(reader), OptionsManager.class);
+                Path filePath = Paths.get("optionsSave.json");
+                OptionsManager optionsSave = gson.fromJson(new FileReader(filePath.toFile()), OptionsManager.class);
 
                 System.out.println(optionsSave.isRandomCash());
 
@@ -98,11 +101,35 @@ public class MainWindow extends JFrame implements ActionListener {
                 ticketGenerated.write("=====================================================================\n");
 
                 float cash = (Math.round(Float.parseFloat(inputCash.getText()))*100)/100;
-                int cup = Integer.parseInt(inputCup.getText());
                 int copies = Integer.parseInt(inputCopies.getText());
+                int cup = 0;
+                RandomConverterGenerator randomConv = null;
+                int indexCounter = 0;
+                int[] indexCup = {2,3,4,5};
 
                 for(int i=0; i<copies; i++){
-                    RandomConverterGenerator randomConv = new RandomConverterGenerator(cup);
+                    switch(optionsSave.getGenerateCupStyle()){
+                        case "Constant" -> {
+                            cup = Integer.parseInt(inputCup.getText());
+                            randomConv = new RandomConverterGenerator(cup);
+                        }
+                        case "Random" -> {
+                            Random rand = new Random();
+                            cup = rand.nextInt(2, Integer.parseInt(inputCup.getText()) + 1);
+                            randomConv = new RandomConverterGenerator(cup);
+                        }
+                        case "In sequence" -> {
+                            cup = indexCup[indexCounter];
+
+                            if(indexCounter < Integer.parseInt(inputCup.getText()) - 2){
+                                indexCounter++;
+                            } else {
+                                indexCounter = 0;
+                            }
+
+                            randomConv = new RandomConverterGenerator(cup);
+                        }
+                    }
 
                     ticketGenerated.write("Congratulation " + randomConv.getRandomName() + " !" + "\n");
 
@@ -123,7 +150,9 @@ public class MainWindow extends JFrame implements ActionListener {
 
                 ticketGenerated.close();
 
-                Desktop.getDesktop().open(new File(txtPathName));
+                if(optionsSave.isOpenGeneratedTxt()) {
+                    Desktop.getDesktop().open(new File(txtPathName));
+                }
 
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
