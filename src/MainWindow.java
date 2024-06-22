@@ -20,10 +20,11 @@ public class MainWindow extends JFrame implements ActionListener {
     JButton GenerateButton;
     JButton OptionsButton;
 
-    String txtName = "test";
-    String txtPathName = System.getProperty("user.home") + "/Desktop/" + txtName + ".txt";
+    Gson gson = new Gson();
+    Path filePath = Paths.get("optionsSave.json");
+    OptionsManager optionsSave = gson.fromJson(new FileReader(filePath.toFile()), OptionsManager.class);
 
-    MainWindow(){
+    MainWindow() throws FileNotFoundException {
         this.setSize(265, 250);
         this.setTitle("Generator random winnings");
         this.setLayout(null);
@@ -90,13 +91,13 @@ public class MainWindow extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == GenerateButton){
             try {
-                Gson gson = new Gson();
-                Path filePath = Paths.get("optionsSave.json");
-                OptionsManager optionsSave = gson.fromJson(new FileReader(filePath.toFile()), OptionsManager.class);
+                String txtPathName = System.getProperty("user.home") + "/Desktop/" + "Generated Tickets" + ".txt";
 
-                System.out.println(optionsSave.isRandomCash());
+                if(!optionsSave.getFilePath().isEmpty()) {
+                    txtPathName = optionsSave.getFilePath();
+                }
 
-                BufferedWriter ticketGenerated = new BufferedWriter(new FileWriter(txtPathName));
+                BufferedWriter ticketGenerated = new BufferedWriter(new FileWriter(txtPathName + "/Generated Tickets.txt"));
 
                 ticketGenerated.write("=====================================================================\n");
 
@@ -151,7 +152,7 @@ public class MainWindow extends JFrame implements ActionListener {
                 ticketGenerated.close();
 
                 if(optionsSave.isOpenGeneratedTxt()) {
-                    Desktop.getDesktop().open(new File(txtPathName));
+                    Desktop.getDesktop().open(new File(txtPathName + "/Generated Tickets.txt"));
                 }
 
             } catch (IOException ex) {

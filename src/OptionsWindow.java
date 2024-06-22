@@ -102,6 +102,7 @@ public class OptionsWindow extends JFrame implements ActionListener {
         String[] valuesOfCups = {"2", "3", "4", "5"};
         comboBoxValuesCups = new JComboBox(valuesOfCups);
         comboBoxValuesCups.setBounds(parameters[10], parameters[11], 40, 30);
+        comboBoxValuesCups.setSelectedItem(fromOptionsSave.getCupsToSetAt());
         add(comboBoxValuesCups);
         comboBoxValuesCups.addActionListener(this);
 
@@ -114,15 +115,17 @@ public class OptionsWindow extends JFrame implements ActionListener {
         maxValueForCups.setBounds(parameters[14], parameters[15], 50, 30);
         add(maxValueForCups);
 
-        inputFilePath = new JTextField();
+        inputFilePath = new JTextField(fromOptionsSave.getFilePath());
         inputFilePath.setBounds(parameters[24], parameters[25], 250, 30);
         add(inputFilePath);
 
-        minTime = new JTextField("1");
+        int[] timeRange = fromOptionsSave.getRangeRandomTime();
+
+        minTime = new JTextField(String.valueOf(timeRange[0]));
         minTime.setBounds(parameters[28], parameters[29], 30, 30);
         add(minTime);
 
-        maxTime = new JTextField("24");
+        maxTime = new JTextField(String.valueOf(timeRange[1]));
         maxTime.setBounds(parameters[30], parameters[31], 30, 30);
         add(maxTime);
 
@@ -156,15 +159,27 @@ public class OptionsWindow extends JFrame implements ActionListener {
             optionsSave.setOpenGeneratedTxt(checkBoxOpeningAfterGenerate.isSelected());
 
             optionsSave.setSpaceOfRandomCash(Integer.parseInt(spaceInput.getText()));
-            optionsSave.setCupsToSetAt(comboBoxValuesCups.getSelectedIndex());
+            optionsSave.setCupsToSetAt(comboBoxValuesCups.getSelectedItem().toString());
 
             optionsSave.setGenerateCupStyle(comboBoxRandomCups.getSelectedItem().toString());
             optionsSave.setFilePath(inputFilePath.getText());
 
-            optionsSave.setRangeRandomTime(new int[] {Integer.parseInt(minTime.getText()), Integer.parseInt(maxTime.getText())});
+            int[] timeRangeToSet = {Integer.parseInt(minTime.getText()), Integer.parseInt(maxTime.getText())};
+
+            if(timeRangeToSet[0] > timeRangeToSet[1]) {
+                timeRangeToSet[0] = timeRangeToSet[1];
+            }
+
+            if(timeRangeToSet[0] < 1 || timeRangeToSet[1] < 1){
+                timeRangeToSet[0] = 1;
+                timeRangeToSet[1] = 24;
+            }else if(timeRangeToSet[1] > 24 || timeRangeToSet[0] > 24){
+                timeRangeToSet[1] = 24;
+                timeRangeToSet[0] = 1;
+            }
+
+            optionsSave.setRangeRandomTime(timeRangeToSet);
             //optionsSave.setRangeRandomWinMultiplayer(new float[][] {Float.parseFloat()});
-
-
 
             Gson gson = new Gson();
             String json = gson.toJson(optionsSave);

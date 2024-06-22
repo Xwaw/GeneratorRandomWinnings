@@ -3,7 +3,7 @@ public class OptionsManager {
     boolean randomCash;
     int spaceOfRandomCash;
     boolean openGeneratedTxt;
-    int cupsToSetAt;
+    String cupsToSetAt;
     String generateCupStyle;
     String filePath;
     int[] rangeRandomTime;
@@ -15,7 +15,7 @@ public class OptionsManager {
 
     public boolean isOpenGeneratedTxt() {return openGeneratedTxt;}
 
-    public int getCupsToSetAt() {return cupsToSetAt;}
+    public String getCupsToSetAt() {return cupsToSetAt;}
 
     public String getGenerateCupStyle() {return generateCupStyle;}
 
@@ -31,7 +31,7 @@ public class OptionsManager {
 
     public void setOpenGeneratedTxt(boolean openGeneratedTxt) {this.openGeneratedTxt = openGeneratedTxt;}
 
-    public void setCupsToSetAt(int cupsToSetAt) {this.cupsToSetAt = cupsToSetAt;}
+    public void setCupsToSetAt(String cupsToSetAt) {this.cupsToSetAt = cupsToSetAt;}
 
     public void setGenerateCupStyle(String generateCupStyle) {this.generateCupStyle = generateCupStyle;}
 
