@@ -7,7 +7,12 @@ public class OptionsManager {
     String generateCupStyle;
     String filePath;
     int[] rangeRandomTime;
-    float[][] rangeRandomWinMultiplayer;
+
+    float[] cup2;
+    float[] cup3;
+    float[] cup4;
+    float[] cup5;
+
 
     public boolean isRandomCash() {return randomCash;}
 
@@ -23,7 +28,21 @@ public class OptionsManager {
 
     public int[] getRangeRandomTime() {return rangeRandomTime;}
 
-    public float[][] getRangeRandomWinMultiplayer() {return rangeRandomWinMultiplayer;}
+    public float[] getCup2() {return cup2;}
+
+    public void setCup2(float[] cup2) {this.cup2 = cup2;}
+
+    public float[] getCup3() {return cup3;}
+
+    public void setCup3(float[] cup3) {this.cup3 = cup3;}
+
+    public float[] getCup4() {return cup4;}
+
+    public void setCup4(float[] cup4) {this.cup4 = cup4;}
+
+    public float[] getCup5() {return cup5;}
+
+    public void setCup5(float[] cup5) {this.cup5 = cup5;}
 
     public void setRandomCash(boolean randomCash) {this.randomCash = randomCash;}
 
@@ -38,6 +57,4 @@ public class OptionsManager {
     public void setFilePath(String filePath) {this.filePath = filePath;}
 
     public void setRangeRandomTime(int[] rangeRandomTime) {this.rangeRandomTime = rangeRandomTime;}
-
-    public void setRangeRandomWinMultiplayer(float[][] rangeRandomWinMultiplayer) {this.rangeRandomWinMultiplayer = rangeRandomWinMultiplayer;}
 }

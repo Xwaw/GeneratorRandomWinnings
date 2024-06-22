@@ -27,12 +27,14 @@ public class OptionsWindow extends JFrame implements ActionListener {
 
     JButton saveOptionsButton;
 
+    OptionsManager fromOptionsSave = null;
+
+    float[][] listOfAllCups;
+
     OptionsWindow(){
         this.setSize(420, 300);
         this.setTitle("Options");
         this.setLayout(null);
-
-        OptionsManager fromOptionsSave = null;
 
         Gson gson = new Gson();
         Path filePath = Paths.get("optionsSave.json");
@@ -106,6 +108,7 @@ public class OptionsWindow extends JFrame implements ActionListener {
         add(comboBoxValuesCups);
         comboBoxValuesCups.addActionListener(this);
 
+        listOfAllCups = new float[][]{fromOptionsSave.getCup2(), fromOptionsSave.getCup3(), fromOptionsSave.getCup4(), fromOptionsSave.getCup5()};
 
         minValueForCups = new JTextField();
         minValueForCups.setBounds(parameters[12], parameters[13], 50, 30);
@@ -151,6 +154,25 @@ public class OptionsWindow extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == comboBoxValuesCups){
             valueCupsText.setText(comboBoxValuesCups.getSelectedItem().toString() + " cups:");
+
+            switch(comboBoxValuesCups.getSelectedItem().toString()){
+                case "2" -> {
+                    minValueForCups.setText(String.valueOf(fromOptionsSave.getCup2()[0]));
+                    maxValueForCups.setText(String.valueOf(fromOptionsSave.getCup2()[1]));
+                }
+                case "3" -> {
+                    minValueForCups.setText(String.valueOf(fromOptionsSave.getCup3()[0]));
+                    maxValueForCups.setText(String.valueOf(fromOptionsSave.getCup3()[1]));
+                }
+                case "4" -> {
+                    minValueForCups.setText(String.valueOf(fromOptionsSave.getCup4()[0]));
+                    maxValueForCups.setText(String.valueOf(fromOptionsSave.getCup4()[1]));
+                }
+                case "5" -> {
+                    minValueForCups.setText(String.valueOf(fromOptionsSave.getCup5()[0]));
+                    maxValueForCups.setText(String.valueOf(fromOptionsSave.getCup5()[1]));
+                }
+            }
         }
         if(e.getSource() == saveOptionsButton){
             OptionsManager optionsSave = new OptionsManager();
@@ -179,7 +201,28 @@ public class OptionsWindow extends JFrame implements ActionListener {
             }
 
             optionsSave.setRangeRandomTime(timeRangeToSet);
-            //optionsSave.setRangeRandomWinMultiplayer(new float[][] {Float.parseFloat()});
+
+            optionsSave.setCup2(listOfAllCups[0]);
+            optionsSave.setCup3(listOfAllCups[1]);
+            optionsSave.setCup4(listOfAllCups[2]);
+            optionsSave.setCup5(listOfAllCups[3]);
+
+            if(!minValueForCups.getText().isEmpty() || !maxValueForCups.getText().isEmpty()) {
+                switch (comboBoxValuesCups.getSelectedItem().toString()) {
+                    case "2" -> {
+                        optionsSave.setCup2(new float[]{Float.parseFloat(minValueForCups.getText()), Float.parseFloat(maxValueForCups.getText())});
+                    }
+                    case "3" -> {
+                        optionsSave.setCup3(new float[]{Float.parseFloat(minValueForCups.getText()), Float.parseFloat(maxValueForCups.getText())});
+                    }
+                    case "4" -> {
+                        optionsSave.setCup4(new float[]{Float.parseFloat(minValueForCups.getText()), Float.parseFloat(maxValueForCups.getText())});
+                    }
+                    case "5" -> {
+                        optionsSave.setCup5(new float[]{Float.parseFloat(minValueForCups.getText()), Float.parseFloat(maxValueForCups.getText())});
+                    }
+                }
+            }
 
             Gson gson = new Gson();
             String json = gson.toJson(optionsSave);

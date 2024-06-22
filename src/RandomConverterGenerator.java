@@ -1,23 +1,37 @@
+import com.google.gson.Gson;
+
 import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Random;
 
 public class RandomConverterGenerator {
     float winMultiplier;
+    private OptionsManager optionsSave;
 
     RandomConverterGenerator(int cups){
         Random rand = new Random();
+
+        Gson gson = new Gson();
+        Path filePath = Paths.get("optionsSave.json");
+        try(FileReader reader = new FileReader(filePath.toFile())){
+            optionsSave = gson.fromJson(reader, OptionsManager.class);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
         switch(cups){
             case 2:
-                winMultiplier = rand.nextFloat(2.0f, 3.5f);
+                winMultiplier = rand.nextFloat(optionsSave.getCup2()[0], optionsSave.getCup2()[1]);
                 break;
             case 3:
-                winMultiplier = rand.nextFloat(4.0f, 7.0f);
+                winMultiplier = rand.nextFloat(optionsSave.getCup3()[0], optionsSave.getCup3()[1]);
                 break;
             case 4:
-                winMultiplier = rand.nextFloat(8.0f, 10.5f);
+                winMultiplier = rand.nextFloat(optionsSave.getCup4()[0], optionsSave.getCup4()[1]);
                 break;
             case 5:
-                winMultiplier = rand.nextFloat(11.0f, 15.0f);
+                winMultiplier = rand.nextFloat(optionsSave.getCup5()[0], optionsSave.getCup5()[1]);
                 break;
         }
     }

@@ -1,1 +1,1 @@
-{"randomCash":true,"spaceOfRandomCash":11,"openGeneratedTxt":true,"cupsToSetAt":"3","generateCupStyle":"In sequence","filePath":"C:\\Users\\admin\\Desktop\\aa","rangeRandomTime":[24,24]}
+{"randomCash":true,"spaceOfRandomCash":50,"openGeneratedTxt":true,"cupsToSetAt":"2","generateCupStyle":"Constant","filePath":"C:\\Users\\admin\\Desktop\\a","rangeRandomTime":[1,24],"cup2":[1.0,10.0],"cup3":[3.0,4.5],"cup4":[5.0,6.5],"cup5":[8.0,12.5]}
