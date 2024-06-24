@@ -31,6 +31,8 @@ public class OptionsWindow extends JFrame implements ActionListener {
 
     float[][] listOfAllCups;
 
+    final int[] parameters;
+
     OptionsWindow(){
         this.setSize(420, 300);
         this.setTitle("Options");
@@ -41,19 +43,19 @@ public class OptionsWindow extends JFrame implements ActionListener {
         try(FileReader reader = new FileReader(filePath.toFile())){
             fromOptionsSave = gson.fromJson(reader, OptionsManager.class);
         }catch (Exception e){
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error reading a file: " + e.getMessage());
         }
 
         try {
             Image icon = ImageIO.read(Main.class.getClassLoader().getResource("settingsIcon.png"));
             setIconImage(icon);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            JOptionPane.showMessageDialog(null, "File doesn't exist or problem with getting name and path of file.");
         }
 
-        //                        X1, Y1, X2, Y2, X3, Y3,  X4, Y4, X5, Y5,  X6, Y6,  X7, Y7,  X8, Y8,  X9, Y9, X10,Y10, X11, Y11,X12,Y12, X13, Y13,X14,Y14,X15,Y15,X16,Y16,X17,Y17,X18,Y18,X19,Y19,X20,Y20
-        final int[] parameters = {15, 15, 15, 45, 15, 75, 115, 75,250, 15, 320, 15, 285, 55, 340, 55, 240, 55, 295, 85, 350, 85, 15, 220, 145, 220, 15,120,150,120,185,120,150,140,185,140,235,145,145,10};
-        //                        0,  1,  2,  3,  4,  5,  6,   7,  8,  9,  10,  11, 12,  13, 14,  15, 16,  17, 18,  19, 20,  21, 22,  23, 24,  25,  26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37,38,39
+        //                     X1, Y1, X2, Y2, X3, Y3,  X4, Y4, X5, Y5,  X6, Y6,  X7, Y7,  X8, Y8,  X9, Y9, X10,Y10, X11, Y11,X12,Y12, X13, Y13,X14,Y14,X15,Y15,X16,Y16,X17,Y17,X18,Y18,X19,Y19,X20,Y20
+        parameters = new int[]{15, 15, 15, 45, 15, 75, 115, 75, 250, 15, 320, 15, 285, 55, 340, 55, 240, 55, 295, 85, 350, 85, 15, 220, 145, 220, 15, 120, 150, 120, 185, 120, 150, 140, 185, 140, 235, 145, 145, 10};
+        //                     0,  1,  2,  3,  4,  5,  6,   7,  8,  9,  10,  11, 12,  13, 14,  15, 16,  17, 18,  19, 20,  21, 22,  23, 24,  25,  26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37,38,39
 
         JLabel generatedCupsText = new JLabel("Generated cups");
         generatedCupsText.setBounds(parameters[4], parameters[5], 100, 30);
@@ -84,10 +86,14 @@ public class OptionsWindow extends JFrame implements ActionListener {
         checkBoxRandomCash = new JCheckBox("Set random Cash");
         checkBoxRandomCash.setBounds(parameters[0], parameters[1], 130, 20);
         checkBoxRandomCash.setSelected(fromOptionsSave.isRandomCash());
+        checkBoxRandomCash.addActionListener(this);
         add(checkBoxRandomCash);
+
         spaceInput = new JTextField(String.valueOf(fromOptionsSave.getSpaceOfRandomCash()));
         spaceInput.setBounds(parameters[38], parameters[39], 50, 30);
-        add(spaceInput);
+        if(checkBoxRandomCash.isSelected()) {
+            add(spaceInput);
+        }
         /////////////////////////////////
 
         checkBoxOpeningAfterGenerate = new JCheckBox("Open After Generate");
@@ -110,11 +116,32 @@ public class OptionsWindow extends JFrame implements ActionListener {
 
         listOfAllCups = new float[][]{fromOptionsSave.getCup2(), fromOptionsSave.getCup3(), fromOptionsSave.getCup4(), fromOptionsSave.getCup5()};
 
-        minValueForCups = new JTextField();
+        switch (fromOptionsSave.getCupsToSetAt()){
+            case "2" -> {
+                minValueForCups = new JTextField(String.valueOf(fromOptionsSave.getCup2()[0]));
+                maxValueForCups = new JTextField(String.valueOf(fromOptionsSave.getCup2()[1]));
+            }
+            case "3" -> {
+                minValueForCups = new JTextField(String.valueOf(fromOptionsSave.getCup3()[0]));
+                maxValueForCups = new JTextField(String.valueOf(fromOptionsSave.getCup3()[1]));
+            }
+            case "4" -> {
+                minValueForCups = new JTextField(String.valueOf(fromOptionsSave.getCup4()[0]));
+                maxValueForCups = new JTextField(String.valueOf(fromOptionsSave.getCup4()[1]));
+            }
+            case "5" -> {
+                minValueForCups = new JTextField(String.valueOf(fromOptionsSave.getCup5()[0]));
+                maxValueForCups = new JTextField(String.valueOf(fromOptionsSave.getCup5()[1]));
+            }
+            default -> {
+                minValueForCups = new JTextField();
+                maxValueForCups = new JTextField();
+            }
+        }
+
         minValueForCups.setBounds(parameters[12], parameters[13], 50, 30);
         add(minValueForCups);
 
-        maxValueForCups = new JTextField();
         maxValueForCups.setBounds(parameters[14], parameters[15], 50, 30);
         add(maxValueForCups);
 
@@ -152,25 +179,33 @@ public class OptionsWindow extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if(e.getSource() == checkBoxRandomCash){
+            if(checkBoxRandomCash.isSelected()) {
+                add(spaceInput);
+            }else {
+                remove(spaceInput);
+            }
+            repaint();
+        }
         if(e.getSource() == comboBoxValuesCups){
             valueCupsText.setText(comboBoxValuesCups.getSelectedItem().toString() + " cups:");
 
             switch(comboBoxValuesCups.getSelectedItem().toString()){
                 case "2" -> {
-                    minValueForCups.setText(String.valueOf(fromOptionsSave.getCup2()[0]));
-                    maxValueForCups.setText(String.valueOf(fromOptionsSave.getCup2()[1]));
+                    minValueForCups.setText(String.valueOf(listOfAllCups[0][0]));
+                    maxValueForCups.setText(String.valueOf(listOfAllCups[0][1]));
                 }
                 case "3" -> {
-                    minValueForCups.setText(String.valueOf(fromOptionsSave.getCup3()[0]));
-                    maxValueForCups.setText(String.valueOf(fromOptionsSave.getCup3()[1]));
+                    minValueForCups.setText(String.valueOf(listOfAllCups[1][0]));
+                    maxValueForCups.setText(String.valueOf(listOfAllCups[1][1]));
                 }
                 case "4" -> {
-                    minValueForCups.setText(String.valueOf(fromOptionsSave.getCup4()[0]));
-                    maxValueForCups.setText(String.valueOf(fromOptionsSave.getCup4()[1]));
+                    minValueForCups.setText(String.valueOf(listOfAllCups[2][0]));
+                    maxValueForCups.setText(String.valueOf(listOfAllCups[2][1]));
                 }
                 case "5" -> {
-                    minValueForCups.setText(String.valueOf(fromOptionsSave.getCup5()[0]));
-                    maxValueForCups.setText(String.valueOf(fromOptionsSave.getCup5()[1]));
+                    minValueForCups.setText(String.valueOf(listOfAllCups[3][0]));
+                    maxValueForCups.setText(String.valueOf(listOfAllCups[3][1]));
                 }
             }
         }
@@ -202,25 +237,39 @@ public class OptionsWindow extends JFrame implements ActionListener {
 
             optionsSave.setRangeRandomTime(timeRangeToSet);
 
-            optionsSave.setCup2(listOfAllCups[0]);
-            optionsSave.setCup3(listOfAllCups[1]);
-            optionsSave.setCup4(listOfAllCups[2]);
-            optionsSave.setCup5(listOfAllCups[3]);
+            if(minValueForCups.getText().isEmpty() || (Float.parseFloat(minValueForCups.getText()) > Float.parseFloat(maxValueForCups.getText()))){
+                optionsSave.setCup2(optionsSave.getCup2());
+                optionsSave.setCup3(optionsSave.getCup3());
+                optionsSave.setCup4(optionsSave.getCup4());
+                optionsSave.setCup5(optionsSave.getCup5());
 
-            if(!minValueForCups.getText().isEmpty() || !maxValueForCups.getText().isEmpty()) {
-                switch (comboBoxValuesCups.getSelectedItem().toString()) {
-                    case "2" -> {
-                        optionsSave.setCup2(new float[]{Float.parseFloat(minValueForCups.getText()), Float.parseFloat(maxValueForCups.getText())});
+                JOptionPane.showMessageDialog(null, "Information: Minimum value is greater than maximum." );
+            }else {
+                optionsSave.setCup2(listOfAllCups[0]);
+                optionsSave.setCup3(listOfAllCups[1]);
+                optionsSave.setCup4(listOfAllCups[2]);
+                optionsSave.setCup5(listOfAllCups[3]);
+
+                if(!minValueForCups.getText().isEmpty() || !maxValueForCups.getText().isEmpty()) {
+                    switch (comboBoxValuesCups.getSelectedItem().toString()) {
+                        case "2" -> {
+                            optionsSave.setCup2(new float[]{Float.parseFloat(minValueForCups.getText()), Float.parseFloat(maxValueForCups.getText())});
+                        }
+                        case "3" -> {
+                            optionsSave.setCup3(new float[]{Float.parseFloat(minValueForCups.getText()), Float.parseFloat(maxValueForCups.getText())});
+                        }
+                        case "4" -> {
+                            optionsSave.setCup4(new float[]{Float.parseFloat(minValueForCups.getText()), Float.parseFloat(maxValueForCups.getText())});
+                        }
+                        case "5" -> {
+                            optionsSave.setCup5(new float[]{Float.parseFloat(minValueForCups.getText()), Float.parseFloat(maxValueForCups.getText())});
+                        }
                     }
-                    case "3" -> {
-                        optionsSave.setCup3(new float[]{Float.parseFloat(minValueForCups.getText()), Float.parseFloat(maxValueForCups.getText())});
-                    }
-                    case "4" -> {
-                        optionsSave.setCup4(new float[]{Float.parseFloat(minValueForCups.getText()), Float.parseFloat(maxValueForCups.getText())});
-                    }
-                    case "5" -> {
-                        optionsSave.setCup5(new float[]{Float.parseFloat(minValueForCups.getText()), Float.parseFloat(maxValueForCups.getText())});
-                    }
+                }else{
+                    optionsSave.setCup2(optionsSave.getCup2());
+                    optionsSave.setCup3(optionsSave.getCup3());
+                    optionsSave.setCup4(optionsSave.getCup4());
+                    optionsSave.setCup5(optionsSave.getCup5());
                 }
             }
 
@@ -231,8 +280,10 @@ public class OptionsWindow extends JFrame implements ActionListener {
             try(FileWriter writer = new FileWriter(filePath.toFile())){
                 writer.write(json);
             } catch (IOException ex) {
-                throw new RuntimeException(ex);
+                JOptionPane.showMessageDialog(null, "Error with optionsWindow: " + ex.getMessage());
             }
+
+            dispose();
         }
     }
 }

@@ -1,1 +1,1 @@
-{"randomCash":true,"spaceOfRandomCash":50,"openGeneratedTxt":true,"cupsToSetAt":"2","generateCupStyle":"Constant","filePath":"C:\\Users\\admin\\Desktop\\a","rangeRandomTime":[1,24],"cup2":[1.0,10.0],"cup3":[3.0,4.5],"cup4":[5.0,6.5],"cup5":[8.0,12.5]}
+{"randomCash":true,"spaceOfRandomCash":10,"openGeneratedTxt":false,"cupsToSetAt":"2","generateCupStyle":"Constant","filePath":"C:/Users/admin/Desktop","rangeRandomTime":[1,24],"cup2":[1.0,2.0],"cup3":[2.0,3.0],"cup4":[3.0,4.0],"cup5":[4.0,5.0]}

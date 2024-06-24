@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -24,6 +25,8 @@ public class MainWindow extends JFrame implements ActionListener {
     Path filePath = Paths.get("optionsSave.json");
     OptionsManager optionsSave = gson.fromJson(new FileReader(filePath.toFile()), OptionsManager.class);
 
+    ImageIcon settingIcon;
+
     MainWindow() throws FileNotFoundException {
         this.setSize(265, 250);
         this.setTitle("Generator random winnings");
@@ -38,7 +41,7 @@ public class MainWindow extends JFrame implements ActionListener {
 
         setLocationRelativeTo(null);
         // cordinates             X,  X,  Y,  Y,  Y,  Y,   Y
-        final int[] parameters = {40, 85, 20, 50, 80, 120, 175};
+        final int[] parameters = {40, 85, 20, 50, 80, 130, 138};
 
 
         // Jabels, Texts for mainWindow //
@@ -62,18 +65,26 @@ public class MainWindow extends JFrame implements ActionListener {
         inputCash.setBounds(parameters[1], parameters[3], 125, 25);
         add(inputCash);
 
-        inputCopies = new JTextField();
+        inputCopies = new JTextField("1");
         inputCopies.setBounds(parameters[1], parameters[4], 125, 25);
         add(inputCopies);
         /////////////////////////////////////
 
         // Buttons, input for mainWindow //
         GenerateButton = new JButton("Generate");
-        GenerateButton.setBounds(25, parameters[5], 200, 50);
+        GenerateButton.setBounds(20, parameters[5], 170, 50);
         add(GenerateButton);
 
-        OptionsButton = new JButton("Options");
-        OptionsButton.setBounds(20, parameters[6], 100, 25);
+        try {
+            BufferedImage image = ImageIO.read(Main.class.getClassLoader().getResource("settingsIcon.png"));
+
+            settingIcon = new ImageIcon(image);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        OptionsButton = new JButton(settingIcon);
+        OptionsButton.setBounds(205, parameters[6], 32, 32);
         add(OptionsButton);
 
         GenerateButton.addActionListener(this);
@@ -90,73 +101,84 @@ public class MainWindow extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == GenerateButton){
-            try {
-                String txtPathName = System.getProperty("user.home") + "/Desktop/" + "Generated Tickets" + ".txt";
+            if(inputCup.getText().isEmpty()){
+                JOptionPane.showMessageDialog(null, "You have to set value of Cup.");
+            }else if(inputCash.getText().isEmpty()){
+                JOptionPane.showMessageDialog(null, "You have to set value of Cash.");
+            }else if(inputCash.getText().isEmpty()){
+                JOptionPane.showMessageDialog(null, "You have to set value of Copies.");
+            }else {
+                try {
 
-                if(!optionsSave.getFilePath().isEmpty()) {
-                    txtPathName = optionsSave.getFilePath();
-                }
+                    String txtPathName = System.getProperty("user.home") + "/Desktop/" + "Generated Tickets" + ".txt";
 
-                BufferedWriter ticketGenerated = new BufferedWriter(new FileWriter(txtPathName + "/Generated Tickets.txt"));
-
-                ticketGenerated.write("=====================================================================\n");
-
-                float cash = (Math.round(Float.parseFloat(inputCash.getText()))*100)/100;
-                int copies = Integer.parseInt(inputCopies.getText());
-                int cup = 0;
-                RandomConverterGenerator randomConv = null;
-                int indexCounter = 0;
-                int[] indexCup = {2,3,4,5};
-
-                for(int i=0; i<copies; i++){
-                    switch(optionsSave.getGenerateCupStyle()){
-                        case "Constant" -> {
-                            cup = Integer.parseInt(inputCup.getText());
-                            randomConv = new RandomConverterGenerator(cup);
-                        }
-                        case "Random" -> {
-                            Random rand = new Random();
-                            cup = rand.nextInt(2, Integer.parseInt(inputCup.getText()) + 1);
-                            randomConv = new RandomConverterGenerator(cup);
-                        }
-                        case "In sequence" -> {
-                            cup = indexCup[indexCounter];
-
-                            if(indexCounter < Integer.parseInt(inputCup.getText()) - 2){
-                                indexCounter++;
-                            } else {
-                                indexCounter = 0;
-                            }
-
-                            randomConv = new RandomConverterGenerator(cup);
-                        }
+                    if (!optionsSave.getFilePath().isEmpty()) {
+                        txtPathName = optionsSave.getFilePath();
                     }
 
-                    ticketGenerated.write("Congratulation " + randomConv.getRandomName() + " !" + "\n");
-
-                    if(optionsSave.isRandomCash()) {
-                        cash = Math.round(randomConv.getRandomCash(cash, optionsSave.getSpaceOfRandomCash())); //In setting value space will be able to change
-                    }
-
-                    CoreWinnings cw = new CoreWinnings(randomConv.getWinMultiplier(), cash);
-
-                    ticketGenerated.write(cup + " Match cups: " + "[ " + randomConv.getWinMultiplier() + " ]" + "\n");
-                    ticketGenerated.write("Cash: " + cash + "\n");
-                    ticketGenerated.write("Cash win - VAT: " + cw.getWinningVAT() + "\n");
-                    ticketGenerated.write("Cash win: " + cw.getWinning() + "\n");
-                    ticketGenerated.write("Time: " + LocalDate.now() + "  " + RandomConverterGenerator.getRandomTime(1, 24) + "\n");
+                    BufferedWriter ticketGenerated = new BufferedWriter(new FileWriter(txtPathName + "/Generated Tickets.txt"));
 
                     ticketGenerated.write("=====================================================================\n");
+
+                    float cash = (Math.round(Float.parseFloat(inputCash.getText())) * 100) / 100;
+                    int copies = Integer.parseInt(inputCopies.getText());
+                    int cup = 0;
+                    RandomConverterGenerator randomConv = null;
+                    int indexCounter = 0;
+                    int[] indexCup = {2, 3, 4, 5};
+
+                    for (int i = 0; i < copies; i++) {
+                        switch (optionsSave.getGenerateCupStyle()) {
+                            case "Constant" -> {
+                                cup = Integer.parseInt(inputCup.getText());
+                                randomConv = new RandomConverterGenerator(cup);
+                            }
+                            case "Random" -> {
+                                Random rand = new Random();
+                                cup = rand.nextInt(2, Integer.parseInt(inputCup.getText()) + 1);
+                                randomConv = new RandomConverterGenerator(cup);
+                            }
+                            case "In sequence" -> {
+                                cup = indexCup[indexCounter];
+
+                                if (indexCounter < Integer.parseInt(inputCup.getText()) - 2) {
+                                    indexCounter++;
+                                } else {
+                                    indexCounter = 0;
+                                }
+
+                                randomConv = new RandomConverterGenerator(cup);
+                            }
+                        }
+
+                        ticketGenerated.write("Congratulation " + randomConv.getRandomName() + " !" + "\n");
+
+                        if (optionsSave.isRandomCash()) {
+                            cash = Math.round(randomConv.getRandomCash(cash, optionsSave.getSpaceOfRandomCash())); //In setting value space will be able to change
+                        }
+
+                        CoreWinnings cw = new CoreWinnings(randomConv.getWinMultiplier(), cash);
+
+                        ticketGenerated.write(cup + " Match cups: " + "[ " + randomConv.getWinMultiplier() + " ]" + "\n");
+                        ticketGenerated.write("Cash: " + cash + "\n");
+                        ticketGenerated.write("Cash win - VAT: " + cw.getWinningVAT() + "\n");
+                        ticketGenerated.write("Cash win: " + cw.getWinning() + "\n");
+                        ticketGenerated.write("Time: " + LocalDate.now() + "  " + RandomConverterGenerator.getRandomTime(1, 24) + "\n");
+
+                        ticketGenerated.write("=====================================================================\n");
+                    }
+
+                    ticketGenerated.close();
+
+                    if (optionsSave.isOpenGeneratedTxt()) {
+                        Desktop.getDesktop().open(new File(txtPathName + "/Generated Tickets.txt"));
+                    }
+
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(null, "Error with generating ticket: " + ex.getMessage());
+
+                    dispose();
                 }
-
-                ticketGenerated.close();
-
-                if(optionsSave.isOpenGeneratedTxt()) {
-                    Desktop.getDesktop().open(new File(txtPathName + "/Generated Tickets.txt"));
-                }
-
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
             }
         }
         if(e.getSource() == OptionsButton){

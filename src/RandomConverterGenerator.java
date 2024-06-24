@@ -1,5 +1,6 @@
 import com.google.gson.Gson;
 
+import javax.swing.*;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -17,7 +18,7 @@ public class RandomConverterGenerator {
         try(FileReader reader = new FileReader(filePath.toFile())){
             optionsSave = gson.fromJson(reader, OptionsManager.class);
         }catch (Exception e){
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error reading a file: " + e.getMessage());
         }
 
         switch(cups){
